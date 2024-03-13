@@ -15,10 +15,10 @@ return {
     en = "Power/Rending",
   },
   speed = {
-    en = "Spd",
+    en = "(Spd)",
   },
   stamina = {
-    en = "Stm"
+    en = "(Stm)"
     },
   reload = {
     en = "Reload",
