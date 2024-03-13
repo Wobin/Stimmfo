@@ -10,7 +10,7 @@ local definitions = {    -- typically housed in a separate file and executed via
       parent = "screen",
       vertical_alignment = "center",
       horizontal_alignment = "center",
-      size = { 180, 64 },
+      size = { 200, 64 },
       position = { 0, 0, 0 }
     }
   },
