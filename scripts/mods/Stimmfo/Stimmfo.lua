@@ -19,29 +19,43 @@ local hud_element_settings = {
 
 mod.getPlayer = function(self)
   if player then return player end
-  player = Managers.player:local_player(1)    
+  player = Managers.player:local_player(1)      
+  mod:dump(player:profile().talents, "talents", 1)
   return player
 end
 
 mod.getStimmfo = function(self)
   local infoString = ""
   if mod.stimmName == "syringe_corruption_pocketable" then
-    infoString = "+25% "..mod:localize("health_or_one_segment")
+    infoString = "[+25% "..mod:localize("health_or_one_segment") .."]"
   elseif mod.stimmName == "syringe_ability_boost_pocketable" then
-    infoString = "+300% " .. mod:localize("ability_cooldown")
+    infoString = "[+300% " .. mod:localize("ability_cooldown").."]"
   elseif mod.stimmName == "syringe_power_boost_pocketable" then
     if mod:getPlayer():profile().archetype.archetype_name:match("psyker") then
-      infoString = "-33% "..mod:localize("peril_gen")
+      infoString = "[-33% "..mod:localize("peril_gen").."]"
     end
-    infoString = infoString .. " +25% "..mod:localize("power_rending")
+    infoString = infoString .. " [+25% "..mod:localize("power_rending").."]"
   elseif mod.stimmName == "syringe_speed_boost_pocketable" then
-    infoString = "+15% "..mod:localize("reload") .." +20% "..mod:localize("attack").." -25% "..mod:localize("push_block").." -50% ".. mod:localize("sprint")
+    infoString = mod:localize("stamina")..":[-25% "..mod:localize("push_block").."] [-50% ".. mod:localize("sprint").."] "..mod:localize("speed")..":[+15% "..mod:localize("reload") .."] [+20% "..mod:localize("attack").."] "
     if mod:getPlayer():profile().loadout_item_data.slot_secondary.id:match("plasma") then
-      infoString = infoString .. " -25% ".. mod:localize("plasma_charge")
+      infoString = infoString .. " [-25% ".. mod:localize("plasma_charge").."]"
     end
     if mod:getPlayer():profile().loadout_item_data.slot_secondary.id:match("staff") then
-      infoString = infoString .. " -25% ".. mod:localize("staff_charge")
+      infoString = infoString .. " [+25% ".. mod:localize("staff").."]"
     end
+    if mod:getPlayer():profile().talents.psyker_brain_burst_improved then
+      infoString = infoString .. " [+25% "..mod:localize("brain_burst").."]"
+    end
+    if mod:getPlayer():profile().talents.psyker_grenade_throwing_knives then
+      infoString = infoString .. " [+25% "..mod:localize("assail").."]"
+    end
+    if mod:getPlayer():profile().talents.psyker_grenade_chain_lightning then
+      infoString = infoString .. " [+25% "..mod:localize("smite").."]"
+    end
+    if mod:getPlayer():profile().archetype.archetype_name:match("psyker") then
+      infoString = infoString .. " [+25% "..mod:localize("quell").."]"
+    end
+  
   end
   return infoString
 end

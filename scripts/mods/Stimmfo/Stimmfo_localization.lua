@@ -14,6 +14,12 @@ return {
   power_rending = {
     en = "Power/Rending",
   },
+  speed = {
+    en = "Spd",
+  },
+  stamina = {
+    en = "Stm"
+    },
   reload = {
     en = "Reload",
   },
@@ -29,7 +35,19 @@ return {
   plasma_charge = {
     en = "Plasma Charge"
   },
-  staff_charge = {
-    en = "Staff Charge"
+  staff = {
+    en = "Staff"
+  },
+  brain_burst ={
+    en = "BB"
+  },
+  assail = {
+    en = "Assail",
+  },
+  smite = {
+    en = "Smite",
+  },
+  quell = {
+    en = "Quell",
     },
 }

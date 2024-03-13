@@ -10,7 +10,7 @@ local definitions = {    -- typically housed in a separate file and executed via
       parent = "screen",
       vertical_alignment = "center",
       horizontal_alignment = "center",
-      size = { 170, 64 },
+      size = { 180, 64 },
       position = { 0, 0, 0 }
     }
   },
@@ -45,15 +45,15 @@ function Stimmformation:update(...)
   if mod.newPosition == -1 or not mod.newPosition then return end
   local wanted_position = mod.newPosition
   
-  local x, y, z = wanted_position[1], wanted_position[2] - 23 , wanted_position[3]
+  local x, y, z = wanted_position[1], wanted_position[2] - 20 , wanted_position[3]
     
   local horizontal_alignment = "right"
   local vertical_alignment = "bottom"  
   
   if mod.wielded then 
     x = x - 40 
-    y = y + 12
-    self._widgets_by_name.stimmformation.style.text_style.font_size = 16    
+    y = y + 15
+    self._widgets_by_name.stimmformation.style.text_style.font_size = 15    
   else
     self._widgets_by_name.stimmformation.style.text_style.font_size = 12    
   end
