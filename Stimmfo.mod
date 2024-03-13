@@ -1,0 +1,1 @@
+C:/ProgramData/vortex/warhammer40kdarktide/mods/Stimmfo/mods/Stimmfo/Stimmfo.mod
