@@ -1,6 +1,6 @@
 return {
 	mod_description = {
-		en = "Stimmfo description",
+		en = "Stimmfo adds usage information alongside the stimm icon to the right",
 		-- ["zh-cn"] = "",
 	},
   health_or_one_segment = {
