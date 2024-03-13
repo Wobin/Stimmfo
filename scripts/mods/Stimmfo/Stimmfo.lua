@@ -36,9 +36,12 @@ mod.getStimmfo = function(self)
     end
     infoString = infoString .. " [+25% "..mod:localize("power_rending").."]"
   elseif mod.stimmName == "syringe_speed_boost_pocketable" then
-    infoString = mod:localize("stamina")..":[-25% "..mod:localize("push_block").."] [-50% ".. mod:localize("sprint").."] "..mod:localize("speed")..":[+15% "..mod:localize("reload") .."] [+20% "..mod:localize("attack").."] "
+    infoString = mod:localize("stamina")..":[-25% "..mod:localize("push_block").."] [-50% ".. mod:localize("sprint").."] "..mod:localize("speed")..":[+20% "..mod:localize("attack").."]"
+    if not mod:getPlayer():profile().loadout_item_data.slot_secondary.id:match("staff") then
+      infoString = infoString .. " [+15% "..mod:localize("reload") .."]"
+    end
     if mod:getPlayer():profile().loadout_item_data.slot_secondary.id:match("plasma") then
-      infoString = infoString .. " [-25% ".. mod:localize("plasma_charge").."]"
+      infoString = infoString .. " [+25% ".. mod:localize("plasma_charge").."]"
     end
     if mod:getPlayer():profile().loadout_item_data.slot_secondary.id:match("staff") then
       infoString = infoString .. " [+25% ".. mod:localize("staff").."]"
