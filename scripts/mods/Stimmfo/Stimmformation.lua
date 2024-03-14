@@ -10,7 +10,7 @@ local definitions = {    -- typically housed in a separate file and executed via
       parent = "screen",
       vertical_alignment = "center",
       horizontal_alignment = "center",
-      size = { 200, 64 },
+      size = { tonumber(mod:localize("size")), 64 },
       position = { 0, 0, 0 }
     }
   },
