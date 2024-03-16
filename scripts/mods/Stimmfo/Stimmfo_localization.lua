@@ -2,11 +2,12 @@ return {
 	mod_name = {
 		en = "Stimmfo",
 		ru = "Стимформация",
+		["zh-cn"] = "兴奋剂信息",
 	},
 	mod_description = {
 		en = "Stimmfo - Adds a description of the action of Stims near their icon on the overlay",
 		ru = "Stimmfo - добавляет описание действия стимуляторов возле их иконки на оверлее",
-		-- ["zh-cn"] = "",
+		["zh-cn"] = "Stimmfo - 在界面的兴奋剂图标旁边添加详细说明",
 	},
 	health_or_one_segment = {
 		en = "Health or 1 segment",
@@ -66,7 +67,7 @@ return {
 	staff = {
 		en = "/Staff Charge",
 		ru = "/к зар. посоха",
-		["zh-cn"] = "/法杖",
+		["zh-cn"] = "/法杖充能",
 	},
 	brain_burst ={
 		en = "/Brain Burst",
@@ -91,6 +92,6 @@ return {
   size = {
     en = "240",
     ru = "280",
-    ["zh-cn"] = "240"
+    ["zh-cn"] = "280",
     }
 }
