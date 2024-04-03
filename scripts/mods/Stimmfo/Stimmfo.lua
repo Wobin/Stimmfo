@@ -19,8 +19,7 @@ local hud_element_settings = {
 
 mod.getPlayer = function(self)
   if player then return player end
-  player = Managers.player:local_player(1)      
-  mod:dump(player:profile().talents, "talents", 1)
+  player = Managers.player:local_player(1)        
   return player
 end
 
