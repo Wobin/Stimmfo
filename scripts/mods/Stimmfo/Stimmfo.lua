@@ -1,7 +1,7 @@
 -- Title: Stimmfo
 -- Author: Wobin
--- Date: 11/03/2024
--- Version: 1.0
+-- Date: 04/04/2024
+-- Version: 1.1
 
 local HudElementPlayerWeaponHandlerSettings = require("scripts/ui/hud/elements/player_weapon_handler/hud_element_player_weapon_handler_settings")
 
@@ -31,7 +31,7 @@ mod.getStimmfo = function(self)
     infoString = "[+300% " .. mod:localize("ability_cooldown").."]"
   elseif mod.stimmName == "syringe_power_boost_pocketable" then
     if mod:getPlayer():profile().archetype.archetype_name:match("psyker") then
-      infoString = "[-33% "..mod:localize("peril_gen")
+      infoString = "[-33% "..mod:localize("peril_gen") .."]"
     end
     infoString = infoString .. " [+25% "..mod:localize("power_rending").."]"
   elseif mod.stimmName == "syringe_speed_boost_pocketable" then
