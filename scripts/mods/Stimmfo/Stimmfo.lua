@@ -1,7 +1,7 @@
 -- Title: Stimmfo
 -- Author: Wobin
--- Date: 04/04/2024
--- Version: 1.1
+-- Date: 11/04/2024
+-- Version: 1.2
 
 local HudElementPlayerWeaponHandlerSettings = require("scripts/ui/hud/elements/player_weapon_handler/hud_element_player_weapon_handler_settings")
 
@@ -35,7 +35,7 @@ mod.getStimmfo = function(self)
     end
     infoString = infoString .. " [+25% "..mod:localize("power_rending").."]"
   elseif mod.stimmName == "syringe_speed_boost_pocketable" then
-    infoString = mod:localize("stamina")..":[-50% ".. mod:localize("sprint").."] [-25% "..mod:localize("push_block").."] "..mod:localize("speed")..":"
+    infoString = mod:localize("stamina")..":[100% ".. mod:localize("restore").. "] [-50% ".. mod:localize("sprint").."] [-25% "..mod:localize("push_block").."] "..mod:localize("speed")..":"
     if mod:getPlayer():profile().loadout_item_data.slot_secondary.id:match("plasma") then
       infoString = infoString .. " [+25% ".. mod:localize("plasma_charge") .."]"
     end   

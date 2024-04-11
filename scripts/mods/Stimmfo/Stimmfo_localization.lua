@@ -44,6 +44,11 @@ return {
 		ru = "к перезар.",
 		["zh-cn"] = "装弹",
 	},
+  restore = {
+		en = "Restore",
+		ru = "восст.",
+		["zh-cn"] = "回满",
+	},
 	attack = {
 		en = "Attack",
 		ru = "к атаке",
