@@ -1,7 +1,7 @@
 -- Title: Stimmfo
 -- Author: Wobin
--- Date: 11/04/2024
--- Version: 1.2
+-- Date: 18/07/2024
+-- Version: 1.3
 
 local HudElementPlayerWeaponHandlerSettings = require("scripts/ui/hud/elements/player_weapon_handler/hud_element_player_weapon_handler_settings")
 
@@ -14,7 +14,10 @@ local hud_element_settings = {
   use_retained_mode = false,  -- optional, used if your element also uses it (uncommon)
   visibility_groups = {
     "alive"
-  }
+  },
+  validation_function = function(params)
+    return Managers.state.game_mode:game_mode_name() ~= "hub"
+  end
 }
 
 mod.getPlayer = function(self)
