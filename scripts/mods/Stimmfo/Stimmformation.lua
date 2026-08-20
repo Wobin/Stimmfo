@@ -3,14 +3,14 @@ local mod = get_mod("Stimmfo")
 local UIWorkspaceSettings = require("scripts/settings/ui/ui_workspace_settings")
 local UIWidget = require("scripts/managers/ui/ui_widget")
 
-local definitions = {    -- typically housed in a separate file and executed via `mod:io_dofile`
+local definitions = {
   scenegraph_definition = {
     screen = UIWorkspaceSettings.screen,
     stimmformation = {
       parent = "screen",
       vertical_alignment = "center",
       horizontal_alignment = "center",
-      size = { tonumber(mod:localize("size")), 64 },
+      size = { tonumber(mod:localize("size")) or 240, 64 },
       position = { 0, 0, 0 }
     }
   },
@@ -21,7 +21,7 @@ local definitions = {    -- typically housed in a separate file and executed via
         pass_type = "text",
         value_id = "text_value",
         value = "Stimm Info",
-        visibility_function = function() return mod.newPosition end,        
+        visibility_function = function() return mod.showStimmfo == true end,
         style = {
           font_size = 12,
           font_type = "machine_medium",
@@ -29,7 +29,7 @@ local definitions = {    -- typically housed in a separate file and executed via
           text_vertical_alignment = "center",
           text_color = Color.ui_terminal(255, true),
           offset = { 0, 0, 0 }
-        }       
+        }
       }
     }, "stimmformation")
   }
@@ -41,26 +41,45 @@ function Stimmformation:init(parent, draw_layer, start_scale)
   Stimmformation.super.init(self, parent, draw_layer, start_scale, definitions)
 end
 
-function Stimmformation:update(...)  
-  if mod.newPosition == -1 or not mod.newPosition then return end
-  local wanted_position = mod.newPosition
-  
-  local x, y, z = wanted_position[1], wanted_position[2] - 20 , wanted_position[3]
-    
-  local horizontal_alignment = "right"
-  local vertical_alignment = "bottom"  
-  
-  if mod.wielded then 
-    x = x - 40 
-    y = y + 15
-    self._widgets_by_name.stimmformation.style.text_style.font_size = 15    
-  else
-    self._widgets_by_name.stimmformation.style.text_style.font_size = 12    
+function Stimmformation:update(...)
+  local element = mod.stimmElement
+  local pivot = mod.stimmPivot
+  local widget = self._widgets_by_name.stimmformation
+  local info = ""
+
+  if element and pivot and not mod.in_hub() then
+    info = mod:getStimmfo()
   end
-  
-  self:set_scenegraph_position("stimmformation", x -50 , y , z, horizontal_alignment, vertical_alignment)
-  
-  self._widgets_by_name.stimmformation.content.text_value = mod:getStimmfo()
+
+  mod.showStimmfo = info ~= ""
+
+  if not mod.showStimmfo then
+    widget.content.text_value = info
+    Stimmformation.super.update(self, ...)
+    return
+  end
+
+  local wielded = mod.wielded
+  local pivot_position = pivot.position
+  local x = pivot_position[1] - 50
+  local y = pivot_position[2] + (element._height_offset or 0)
+
+  if wielded then
+    x = x - 40
+    y = y - 5
+  else
+    y = y + 10
+  end
+
+  if self._last_wielded ~= wielded then
+    widget.style.text_style.font_size = wielded and 15 or 12
+    self._last_wielded = wielded
+  end
+
+  self:set_scenegraph_position("stimmformation", x, y, 0, pivot.horizontal_alignment, pivot.vertical_alignment)
+
+  widget.content.text_value = info
   Stimmformation.super.update(self, ...)
-end --]]
+end
+
 return Stimmformation

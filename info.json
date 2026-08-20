@@ -1,0 +1,27 @@
+{
+	"name": "Stimmfo",
+	"description": "Stimmfo - Adds a description of the action of Stims near their icon on the overlay",
+	"version": "1.4",
+	"author": "Wobin",
+	"homepage": "https://www.nexusmods.com/warhammer40kdarktide/mods/292",
+	"source": "https://github.com/Wobin/Stimmfo",
+	"funding": {
+		"kofi": "https://ko-fi.com/wobin_dwonderdog"
+	},
+	"nexusId": "292",
+	"localization": {
+		"ru": {
+			"name": "Стимформация",
+			"description": "Stimmfo - добавляет описание действия стимуляторов возле их иконки на оверлее"
+		},
+		"zh-cn": {
+			"name": "兴奋剂信息",
+			"description": "Stimmfo - 在界面的兴奋剂图标旁边添加详细说明"
+		}
+	},
+	"order": {
+		"require": [],
+		"this_after": [],
+		"this_before": []
+	}
+}
