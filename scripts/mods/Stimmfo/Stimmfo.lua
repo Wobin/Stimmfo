@@ -1,14 +1,20 @@
 --[[
   Name: Stimmfo
   Author: Wobin
-  Date: 18/07/2024
+  Date: 23/08/2026
   Repository: https://github.com/Wobin/Stimmfo
 ]]--
 
 local mod = get_mod("Stimmfo")
 mod.version = mod.get_metadata and mod:get_metadata("version") or "unknown"
 
+local broker_settings_ok, BrokerTalentSettings = pcall(require, "scripts/settings/talent/talent_settings_broker")
+
 local STIMM_SLOT = "slot_pocketable_small"
+local LOC_BRAIN_RUPTURE = "loc_talent_psyker_brain_burst_improved"
+local BROKER_DURATION_PASSIVE = "broker_passive_stimm_increased_duration"
+local BROKER_BASE_DURATION = 15
+local BROKER_DURATION_BONUS = 5
 
 local player
 
@@ -24,14 +30,60 @@ local hud_element_settings = {
 }
 
 mod.in_hub = function()
-  local gm = Managers.state.game_mode
-  return gm and gm:game_mode_name() == "hub"
+  local gm = Managers.state and Managers.state.game_mode
+  if not gm then return true end
+  return gm:game_mode_name() == "hub"
 end
 
 mod.getPlayer = function(self)
   if player then return player end
-  player = Managers.player:local_player(1)
+  player = Managers.player and Managers.player:local_player_safe(1)
   return player
+end
+
+mod.getBrokerMix = function(self, local_player)
+  local unit = local_player and local_player.player_unit
+  local talent_extension = unit and ScriptUnit.has_extension(unit, "talent_system")
+  local stimm = broker_settings_ok and BrokerTalentSettings and BrokerTalentSettings.broker_stimm
+
+  if not talent_extension or not stimm or not talent_extension.buff_template_tier then
+    return ""
+  end
+
+  local best = {}
+
+  for talent_name, data in pairs(stimm) do
+    local tier = talent_extension:buff_template_tier(talent_name)
+    local talent_data = tier and tier > 0 and data.talent_data
+    local key = talent_data and talent_data.display_name
+
+    if key then
+      local rank = tonumber(string.match(talent_name, "_(%d+)%a?$")) or tier
+
+      if not best[key] or rank > best[key].rank then
+        best[key] = { rank = rank, format_values = talent_data.format_values }
+      end
+    end
+  end
+
+  local branches = {}
+
+  for key, entry in pairs(best) do
+    branches[#branches + 1] = Localize(key, true, entry.format_values)
+  end
+
+  if #branches == 0 then return "" end
+
+  table.sort(branches)
+
+  local duration = BROKER_BASE_DURATION
+  local bonus = talent_extension:buff_template_tier(BROKER_DURATION_PASSIVE)
+
+  if bonus and bonus > 0 then
+    duration = duration + BROKER_DURATION_BONUS
+  end
+
+  return "[" .. duration .. "s] [" .. table.concat(branches, " / ") .. "]"
 end
 
 mod.getStimmfo = function(self)
@@ -46,7 +98,9 @@ mod.getStimmfo = function(self)
 
   if not prof then return infoString end
 
-  if self.stimmName == "syringe_corruption_pocketable" then
+  if self.stimmName == "syringe_broker_pocketable" then
+    infoString = self:getBrokerMix(local_player)
+  elseif self.stimmName == "syringe_corruption_pocketable" then
     infoString = "[+25% "..self:localize("health_or_one_segment") .."]"
   elseif self.stimmName == "syringe_ability_boost_pocketable" then
     infoString = "[+300% " .. self:localize("ability_cooldown").."]"
@@ -73,13 +127,13 @@ mod.getStimmfo = function(self)
         infoString = infoString .. self:localize("staff")
       end
       if talents.psyker_brain_burst_improved then
-        infoString = infoString .. self:localize("brain_burst")
-      end
-      if talents.psyker_grenade_throwing_knives then
+        infoString = infoString .. "/" .. Localize(LOC_BRAIN_RUPTURE)
+      elseif talents.psyker_grenade_throwing_knives then
         infoString = infoString .. self:localize("assail")
-      end
-      if talents.psyker_grenade_chain_lightning then
+      elseif talents.psyker_grenade_chain_lightning then
         infoString = infoString .. self:localize("smite")
+      else
+        infoString = infoString .. self:localize("brain_burst")
       end
       infoString = infoString .. "]"
     end
@@ -143,5 +197,8 @@ mod.on_all_mods_loaded = function ()
 
     mod.stimmElement = nil
     mod.stimmPivot = nil
+    mod.stimmName = nil
+    mod._cached_stimm = nil
+    mod._cached_info = nil
   end)
 end

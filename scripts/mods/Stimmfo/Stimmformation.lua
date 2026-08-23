@@ -2,6 +2,10 @@ local mod = get_mod("Stimmfo")
 
 local UIWorkspaceSettings = require("scripts/settings/ui/ui_workspace_settings")
 local UIWidget = require("scripts/managers/ui/ui_widget")
+local UIRenderer = require("scripts/managers/ui/ui_renderer")
+
+local MIN_WIDTH = 120
+local WIDTH_PADDING = 16
 
 local definitions = {
   scenegraph_definition = {
@@ -41,7 +45,7 @@ function Stimmformation:init(parent, draw_layer, start_scale)
   Stimmformation.super.init(self, parent, draw_layer, start_scale, definitions)
 end
 
-function Stimmformation:update(...)
+function Stimmformation:update(dt, t, ui_renderer, ...)
   local element = mod.stimmElement
   local pivot = mod.stimmPivot
   local widget = self._widgets_by_name.stimmformation
@@ -55,11 +59,26 @@ function Stimmformation:update(...)
 
   if not mod.showStimmfo then
     widget.content.text_value = info
-    Stimmformation.super.update(self, ...)
+    Stimmformation.super.update(self, dt, t, ui_renderer, ...)
     return
   end
 
   local wielded = mod.wielded
+
+  if self._last_wielded ~= wielded then
+    widget.style.text_style.font_size = wielded and 15 or 12
+    self._last_wielded = wielded
+    self._last_measured = nil
+  end
+
+  if ui_renderer and self._last_measured ~= info then
+    local width = UIRenderer.styled_text_size(ui_renderer, info, widget.style.text_style)
+    if width then
+      self:_set_scenegraph_size("stimmformation", math.max(width + WIDTH_PADDING, MIN_WIDTH), nil)
+    end
+    self._last_measured = info
+  end
+
   local pivot_position = pivot.position
   local x = pivot_position[1] - 50
   local y = pivot_position[2] + (element._height_offset or 0)
@@ -71,15 +90,10 @@ function Stimmformation:update(...)
     y = y + 10
   end
 
-  if self._last_wielded ~= wielded then
-    widget.style.text_style.font_size = wielded and 15 or 12
-    self._last_wielded = wielded
-  end
-
   self:set_scenegraph_position("stimmformation", x, y, 0, pivot.horizontal_alignment, pivot.vertical_alignment)
 
   widget.content.text_value = info
-  Stimmformation.super.update(self, ...)
+  Stimmformation.super.update(self, dt, t, ui_renderer, ...)
 end
 
 return Stimmformation
