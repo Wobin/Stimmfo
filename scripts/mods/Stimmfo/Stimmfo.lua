@@ -1,7 +1,7 @@
 --[[
   Name: Stimmfo
   Author: Wobin
-  Date: 24/08/2026
+  Date: 25/08/2026
   Repository: https://github.com/Wobin/Stimmfo
 ]]--
 
@@ -15,6 +15,19 @@ local LOC_BRAIN_RUPTURE = "loc_talent_psyker_brain_burst_improved"
 local BROKER_DURATION_PASSIVE = "broker_passive_stimm_increased_duration"
 local BROKER_BASE_DURATION = 15
 local BROKER_DURATION_BONUS = 5
+local BROKER_BRANCHES = { "combat", "concentration", "durability", "celerity" }
+local BROKER_COLOUR_PREFIX = "stimmfo_broker_colour_"
+local BROKER_COLOUR_MODE = "stimmfo_broker_colour_mode"
+local COLOUR_RESET = "{#reset()}"
+
+local BROKER_IS_BRANCH = {}
+
+for i = 1, #BROKER_BRANCHES do
+  BROKER_IS_BRANCH[BROKER_BRANCHES[i]] = true
+end
+
+local branch_colours = {}
+local colouring_enabled = false
 
 local player
 
@@ -41,6 +54,39 @@ mod.getPlayer = function(self)
   return player
 end
 
+local function refresh_branch_colour(branch)
+  local colour = colouring_enabled and mod:get(BROKER_COLOUR_PREFIX .. branch)
+
+  if type(colour) == "table" and colour[2] and colour[3] and colour[4] then
+    branch_colours[branch] = string.format("{#color(%d,%d,%d)}", colour[2], colour[3], colour[4])
+  else
+    branch_colours[branch] = nil
+  end
+end
+
+mod.refreshBranchColours = function()
+  colouring_enabled = mod:get(BROKER_COLOUR_MODE) == "on"
+
+  for i = 1, #BROKER_BRANCHES do
+    refresh_branch_colour(BROKER_BRANCHES[i])
+  end
+end
+
+mod.on_setting_changed = function(setting_id)
+  if setting_id == BROKER_COLOUR_MODE then
+    mod.refreshBranchColours()
+  else
+    local branch = setting_id and string.match(setting_id, "^" .. BROKER_COLOUR_PREFIX .. "(%a+)$")
+
+    if not branch or not BROKER_IS_BRANCH[branch] then return end
+
+    refresh_branch_colour(branch)
+  end
+
+  mod._cached_stimm = nil
+  mod._cached_profile = nil
+end
+
 mod.getBrokerMix = function(self, local_player)
   local unit = local_player and local_player.player_unit
   local talent_extension = unit and ScriptUnit.has_extension(unit, "talent_system")
@@ -59,9 +105,10 @@ mod.getBrokerMix = function(self, local_player)
 
     if key then
       local rank = tonumber(string.match(talent_name, "_(%d+)%a?$")) or tier
+      local branch = string.match(talent_name, "^broker_stimm_(%a+)_")
 
       if not best[key] or rank > best[key].rank then
-        best[key] = { rank = rank, format_values = talent_data.format_values }
+        best[key] = { rank = rank, format_values = talent_data.format_values, branch = branch }
       end
     end
   end
@@ -69,12 +116,22 @@ mod.getBrokerMix = function(self, local_player)
   local branches = {}
 
   for key, entry in pairs(best) do
-    branches[#branches + 1] = Localize(key, true, entry.format_values)
+    branches[#branches + 1] = {
+      text = Localize(key, true, entry.format_values),
+      colour = branch_colours[entry.branch]
+    }
   end
 
   if #branches == 0 then return "" end
 
-  table.sort(branches)
+  table.sort(branches, function(a, b) return a.text < b.text end)
+
+  local terms = {}
+
+  for i = 1, #branches do
+    local entry = branches[i]
+    terms[i] = entry.colour and (entry.colour .. entry.text .. COLOUR_RESET) or entry.text
+  end
 
   local duration = BROKER_BASE_DURATION
   local bonus = talent_extension:buff_template_tier(BROKER_DURATION_PASSIVE)
@@ -83,7 +140,7 @@ mod.getBrokerMix = function(self, local_player)
     duration = duration + BROKER_DURATION_BONUS
   end
 
-  return "[" .. duration .. "s] [" .. table.concat(branches, " / ") .. "]"
+  return "[" .. duration .. "s] [" .. table.concat(terms, " / ") .. "]"
 end
 
 mod.getStimmfo = function(self)
@@ -164,6 +221,8 @@ end
 
 mod.on_all_mods_loaded = function ()
   mod:info(mod.version)
+
+  mod.refreshBranchColours()
 
   if not mod.register_hud_element then
     mod:echo("Not running latest dmf")

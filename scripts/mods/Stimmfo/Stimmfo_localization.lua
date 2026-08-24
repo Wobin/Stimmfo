@@ -9,6 +9,27 @@ return {
 		ru = "Stimmfo - добавляет описание действия стимуляторов возле их иконки на оверлее",
 		["zh-cn"] = "Stimmfo - 在界面的兴奋剂图标旁边添加详细说明",
 	},
+	stimmfo_broker_colour_mode = {
+		en = "Colour Broker stimm by branch",
+	},
+	stimmfo_broker_colour_mode_off = {
+		en = "Off",
+	},
+	stimmfo_broker_colour_mode_on = {
+		en = "On",
+	},
+	stimmfo_broker_colour_combat = {
+		en = "Combat",
+	},
+	stimmfo_broker_colour_concentration = {
+		en = "Concentration",
+	},
+	stimmfo_broker_colour_durability = {
+		en = "Durability",
+	},
+	stimmfo_broker_colour_celerity = {
+		en = "Celerity",
+	},
 	health_or_one_segment = {
 		en = "Health or 1 segment",
 		ru = "здоровья или 1 сегмент",
