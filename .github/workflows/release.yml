@@ -36,6 +36,9 @@ jobs:
             || { echo "Missing Stimmfo.mod" && exit 1; }
           unzip -l "Stimmfo-${VERSION}.zip" | grep -q "Stimmfo/info.json" \
             || { echo "Missing info.json" && exit 1; }
+          if unzip -Z "Stimmfo-${VERSION}.zip" | grep '^l'; then
+            echo "Symlink entry in zip: extractors that honour it produce an unreadable file" && exit 1
+          fi
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v7
